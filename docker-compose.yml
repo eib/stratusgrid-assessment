@@ -1,0 +1,19 @@
+version: '3'
+services:
+
+  # TODO: consider persisting the database (e.g. Docker mount locally),
+  # ... but would need "drop all" tooling first??
+  db:
+    build: ./db
+    ports:
+      - 5432:5432
+    # TODO: "harden" by exporting these to environment specific params?
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+
+# networks:
+#   frontend:
+#   backend:
+
+# volumes:
+#   db-data:

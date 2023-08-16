@@ -1,0 +1,5 @@
+SELECT 1/(SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'shows')
+AS shows_table_exists;
+
+SELECT 1/(SELECT COUNT(*) FROM shows)
+AS shows_data_exists;
