@@ -50,7 +50,15 @@ StratusGrid engineering code assessment
 * DB system
     * PostgreSQL, because it doesn't really matter which SQL database
 * Schema conventions:
-    * Naming: `table_names`, `column_name`, `primary_id` (vs `id`)
+    * Naming: `table_names`, `column_name`, `primary_id` (vs `id`) ... based on previous conventions
 * Schema versioning:
     * In the short-term, files in `./schema/` are numerically-prefixed
     * Long-term, I would like tooling to create, import, update, rollback, and test schema changes
+
+
+## Verification steps
+* make up
+* make probe
+* make down
+* make up-prod
+* make probe

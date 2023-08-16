@@ -1,33 +1,45 @@
-.DEFAULT_GOAL := up test
+.DEFAULT_GOAL := test up probe
+IMAGE_ROOT := stratusgrid-assessment
 
+todo:
+	echo TODO: extract image-specific stuff to their own Makefiles
+	echo TODO: postgres `run -it` w/ localhost:5432 doesn't seem to work... so, what to use? :thinking:
+	echo TODO: lock down DB password (.pgpass, IIRC??)
+
+api:
+	docker exec -it \
+	`docker container ls --all --filter=ancestor=${IMAGE_ROOT}-api --format "{{.ID}}"` \
+	bash
 db:
 	docker exec -it \
-	`docker container ls --all --filter=ancestor=stratusgrid-assessment-db --format "{{.ID}}"` \
+	`docker container ls --all --filter=ancestor=${IMAGE_ROOT}-db --format "{{.ID}}"` \
 	bash
-
 psql:
-	@# echo TODO: localhost:5432 doesn't seem to work... so, what to use? :thinking:
-	@# echo TODO: lock down password (.pgpass, IIRC)
 	docker exec -it \
-	`docker container ls --all --filter=ancestor=stratusgrid-assessment-db --format "{{.ID}}"` \
+	`docker container ls --all --filter=ancestor=${IMAGE_ROOT}-db --format "{{.ID}}"` \
 	psql postgresql://eblackwelder:assessment@/stratusgrid
 
-up:
-	docker-compose up --detach
-
+dev:
+	docker-compose up --build --detach
+prod:
+	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build --detach
+logs:
+	docker-compose logs -f
 down:
 	docker-compose down
 
-restart:
-	docker-compose restart
+test: api-test
+api-test:
+	cd api; make test
 
-test: db_test
-
-db_test:
+probe: db_probe
+db_probe:
 	docker exec -it \
 	`docker container ls --all --filter=ancestor=stratusgrid-assessment-db --format "{{.ID}}"` \
-	bin/run-tests.sh
+	bin/run_probes.sh
 
-.PHONY: db psql \
-	up down restart \
-	test db_test
+.PHONY: todo \
+ 	api db psql \
+	dev prod logs down \
+	test api-test \
+	probe db_probe

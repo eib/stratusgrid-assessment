@@ -9,4 +9,4 @@ EXPOSE 5432
 
 # Built-in initialization scripts, per https://hub.docker.com/_/postgres/ 
 COPY ./schema /docker-entrypoint-initdb.d/
-COPY --chmod=u+x run-tests.sh /bin/
+COPY --chmod=u+x run_probes.sh /bin/

@@ -6,10 +6,24 @@ services:
   db:
     build: ./db
     ports:
-      - 5432:5432
+      - "5432:5432"
     # TODO: "harden" by exporting these to environment specific params?
     stdin_open: true # docker run -i
     tty: true        # docker run -t
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: dev_target
+    volumes:
+      - ./api/src:/home/node/app/src
+      - ./api/nodemon.json:/home/node/app/nodemon.json
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    command: npm run dev-server
 
 # networks:
 #   frontend:
