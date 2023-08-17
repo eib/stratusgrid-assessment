@@ -1,8 +1,8 @@
-import * as http from 'http';
 import express from 'express';
 import { RestfulRouteAdapter } from './rest/restful-route-adapter';
 import { Settings } from './config';
 import { Route } from './rest/route';
+import { join } from './routes/routes';
 
 export interface ExpressAppBuilder {
     addResourceCollection<T>(resourceName: string, route: Route<T>): ExpressAppBuilder;
@@ -10,11 +10,13 @@ export interface ExpressAppBuilder {
 }
 
 export class AppBuilder {
+    private baseUrl: string;
     private app: express.Express;
     private adapter: RestfulRouteAdapter;
 
-    constructor(private settings: Settings) {
+    constructor(settings: Settings) {
         this.app = express();
+        this.baseUrl = settings.baseUrl;
         this.adapter = new RestfulRouteAdapter(this.app, settings.baseUrl);
     }
 
@@ -23,9 +25,8 @@ export class AppBuilder {
     }
 
     addResourceCollection<T>(resourceName: string, route: Route<T>): ExpressAppBuilder {
-        // TODO: sanitize resourceName, check for convention conformance: [-a-Z0-9]+, check for uniqueness
-        console.log(`Adding routes for "${resourceName}"`);
-        this.adapter.buildRoute(`${this.settings.baseUrl}/${resourceName}`, route);
+        console.log(`Adding routes for "${resourceName}" ...`);
+        this.adapter.buildRoute(join(this.baseUrl, resourceName), route);
         return this;
     }
 }

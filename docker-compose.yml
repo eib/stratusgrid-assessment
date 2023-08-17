@@ -21,9 +21,10 @@ services:
       context: ./api
       target: dev_target
     restart: always
-    volumes:
-      - ./api/src:/home/node/app/src
-      - ./api/nodemon.json:/home/node/app/nodemon.json
+    # TODO: want live-reload (a la nodemon)
+    # volumes:
+    #   - ./api/src:/home/node/app/src
+    #   - ./api/nodemon.json:/home/node/app/nodemon.json
     environment:
       PORT: 8080
       # TODO: password/secrets management

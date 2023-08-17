@@ -6,9 +6,9 @@ Refer to the Richardson Maturity Model (for REST-ful APIs):
     https://martinfowler.com/articles/richardsonMaturityModel.html
 
 ### REST-like Conventions
-* `GET /:resources/` => 200: collection of the Resource
+* `GET /:resources` => 200: collection of the Resource
 * `GET /:resources/:id` => 200: if found, JSON content of the Resource; otherwise 404
-* `POST /:resources/` => 201: URL of newly created Resource
+* `POST /:resources` => 201: URL of newly created Resource
 * `PUT /:resources/:id` => 204: if found, Resource updated successfully; otherwise 404
 * `PATCH /:resources/:id` => 204: if found, Resource was (partially) updated; otherwise 404
 * `DELETE /:resources/:id` => 200: if found, Resource was deleted; otherwise 404

@@ -6,15 +6,16 @@ export class RestfulRouteAdapter {
     constructor(private app: express.Application, private urlRoot: string) {}
 
     buildRoute<T>(urlRoot: string, route: Route<T>) {
-        // `GET /:resources/`
-        console.log(`Adding route "GET ${urlRoot}/"`);
-        // TODO: as of "express v5", async failed Promises will be unwrapped automatically
-        this.app.get(`${urlRoot}/`, async (req, res) => {
+        // `GET /:resources`
+        console.log(`Adding route "GET ${urlRoot}"`);
+        this.app.get(`${urlRoot}`, async (req, res) => {
             try {
                 const searchParams = this.parseSearchParams(req);
                 const results = await route.list(req, searchParams);
                 res.json(results);
             } catch (err) {
+                // TODO: as of "express v-next", async-rejected routes will be unwrapped automatically :D
+                // ... currently, "unhandledRejection" events kill the app. :|
                 console.log(`Error occurred in route "GET ${urlRoot}/" - `);
                 console.log(err);
                 res.status(500).send('Server Error');
@@ -41,21 +42,23 @@ export class RestfulRouteAdapter {
             });
         } else {
             console.log(`Skipping route "GET ${urlRoot}/:id"`);
-            this.app.get(`${urlRoot}/:id`, (_, res) => {
-                res.status(405).send('Method Not Allowed')
-            });
         }
 
-        // TODO: `POST /:resources/`
-        // this.app.post(...);
-        // TODO: `PUT /:resources/`
+        // TODO: `POST /:resources`
+        // console.log(`Skipping route "POST ${urlRoot}"`)
+        // this.app.post(`${urlRoot}`, (req, res) => {
+        //     // console.log(`Not allowed to call "POST ${urlRoot}"`);
+        //     // res.status(405).send('Method Not Allowed');
+        //     throw new Error(`Not allowed to call "POST ${urlRoot}"`);
+        // });
+        // TODO: `PUT /:resources/:id`
         // this.app.put(...);
         // TODO: `DELETE /:resources/:id`
         // this.app.delete(...);
     }
 
     private parseSearchParams(req: express.Request): SearchParams {
-        //TODO: implement, validate, sanitize
+        //TODO: implement, validate, sanitize (and standardize defaults)
         return { page: 1, perPage: 10 };
     }
 }

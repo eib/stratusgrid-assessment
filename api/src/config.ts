@@ -4,28 +4,43 @@ interface Env {
     [key: string]: string | undefined;
 }
 
+export type PoolFactory = () => Pool;
+
 export interface Settings {
     port: number;
     baseUrl: string;
     dbConnectionString: string;
+    poolFactory: PoolFactory;
 }
+
+export let defaultSettings: Settings = {
+    port: 8080,
+    baseUrl: '/v1',
+    dbConnectionString: 'postgresql://',
+    poolFactory: () => {
+        return createPool(defaultSettings.dbConnectionString);
+    },
+};
 
 export function parseSettings(env: Env = process.env): Settings {
     // TODO: ensure trim trailing-slash from base URL
-    const port = parseInt(env.PORT || '8080', 10);
-    const baseUrl = '/api';
-    const dbConnectionString = env.DB_URL || 'postgresql://';
+    const port = parseInt(env.PORT || '0', 10) || defaultSettings.port;
+    const baseUrl = env.API_URL || defaultSettings.baseUrl;
+    const dbConnectionString = env.DB_URL || defaultSettings.dbConnectionString;
+    const poolFactory = defaultSettings.poolFactory;
     return {
         port,
         dbConnectionString,
         baseUrl,
+        poolFactory,
     }
 }
 
-export function createPool(settings: Settings): Pool {
-    console.log(`Database connection string: ${settings.dbConnectionString}`);
+function createPool(connectionString: string): Pool {
+    console.log(`Database connection string: ${connectionString}`);
     return new Pool({
-        connectionString: settings.dbConnectionString,
+        connectionString, // Looks like: postgresql://username:password@host:port/database
+        
         // max?: number | undefined;
         // min?: number | undefined;
         // idleTimeoutMillis?: number | undefined;

@@ -1,7 +1,7 @@
 import { parseSettings } from './config';
 import { buildApp } from './routes';
 
-const settings = parseSettings();
+const settings = parseSettings(process.env);
 const app = buildApp(settings);
 
 const server = app.listen(settings.port, () => {

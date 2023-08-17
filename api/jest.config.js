@@ -24,8 +24,7 @@ const config = {
   // collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  // TODO: don't like "coverage" being copied into Docker image (which I believe is happening).
-  coverageDirectory: "coverage",
+  coverageDirectory: "../coverage/api",
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [

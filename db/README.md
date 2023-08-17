@@ -30,7 +30,7 @@ SELECT 1/(SELECT 1 FROM XXX WHERE ??? LIMIT 1)
 AS XXX_data_exists;
 ```
 
-## TODO
+## TODOs
 Short-term:
 * Tooling to perform schema upgrades post-startup.
 * Patterns for idempotent schema changes.
