@@ -5,29 +5,52 @@ services:
   # ... but would need "drop all" tooling first??
   db:
     build: ./db
+    restart: always
+    networks:
+      - backend
+    # stdin_open: true # docker run -i
+    # tty: true        # docker run -t
+    expose:
+      - 5432
+    # TODO: move to ".dev.yml" (only useful when running dev server on host)
     ports:
-      - "5432:5432"
-    # TODO: "harden" by exporting these to environment specific params?
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
+      - 5432:5432
 
   api:
     build:
       context: ./api
-      dockerfile: Dockerfile
       target: dev_target
+    restart: always
     volumes:
       - ./api/src:/home/node/app/src
       - ./api/nodemon.json:/home/node/app/nodemon.json
-    expose:
-      - "8080"
+    environment:
+      PORT: 8080
+      # TODO: password/secrets management
+      DB_URL: postgresql://eblackwelder:assessment@db:5432/stratusgrid
     ports:
-      - "8080:8080"
-    command: npm run dev-server
+      - 8080:8080
+    expose:
+      - 8080
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - db
+  
+  # ui:
+  #   build: ./ui
+  #   restart: always
+  #   ports:
+  #     - 8000:8000
+  #   depends_on: 
+  #     - backend
+  #   networks:
+  #     - frontend
 
-# networks:
-#   frontend:
-#   backend:
+networks:
+  frontend:
+  backend:
 
 # volumes:
 #   db-data:

@@ -10,6 +10,22 @@ StratusGrid engineering code assessment
 * Feature: end-users can favorite shows/mark watched
 * Role-based UI: Only admins can edit show(s)/listing(s)
 
+## API
+
+### MVP
+* Resources:
+    * `/shows` => Collection of Shows { title, numSeasons, startYear }
+
+### Nice-to-haves
+* Authorization (for POST/PUT/DELETE)
+* Resources:
+    * Users
+    * User favorites
+* Search functionality
+* Plaintext `GET` responses would be useful for humans
+* Handle `HEAD` requests
+* Handle `OPTIONS` requests ... esp. the dreaded CORS :|
+
 ## DB Structure
 ### MVP
 * Shows
@@ -18,6 +34,7 @@ StratusGrid engineering code assessment
     * num_seasons
     * start_year
 ### Nice-to-haves
+* Auto-updating creation/modification timestamps (helps with HTTP caching)
 * Users
     * user_id (PK, auto-increment)
     * username (unique constraint)
@@ -44,7 +61,15 @@ StratusGrid engineering code assessment
 * Subject matter
     * Anime! ... cuz reasonz :P
 
-### 
+### API/backend decisions
+* Language: Typescript, due to personal preference
+* HTTP server/middleware "framework": express (for now), due to starting simplicity (prefer async style of Koa, but whatevs)
+* Testing tools: Jest, because I haven't tried it yet (vs Mocha, Jasmine, etc)
+* Going RESTful: for the sake of URL decoupling (vs REST-like), for the sake of service simplicity (vs GraphQL)
+* API-versioning: URL-based API versioning (e.g. `api.whatever.com/vX/...`) vs custom/Accept header for the sake of human-browsing/discoverability
+    * Definitely willing to reconsider this (again). Left off reading at: https://blog.restcase.com/restful-api-versioning-insights/
+
+### DB decisions
 * DB type
     * Relational, for the relational integrity as the feature list grows (categories, seasons, actors, etc)
 * DB system

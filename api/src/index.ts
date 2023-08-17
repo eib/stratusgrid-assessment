@@ -1,16 +1,17 @@
-import express from 'express';
+import { parseSettings } from './config';
+import { buildApp } from './routes';
 
-const port = 8080; // TODO: migrate to an args/env-vars module
-const app = express();
-const server = app.listen(port, () => {
-    // TODO: structured logging
-    console.log(`server running on port ${port}`);
+const settings = parseSettings();
+const app = buildApp(settings);
+
+const server = app.listen(settings.port, () => {
+    console.log(`Server listening on port ${settings.port}`);
 });
 
 process.on('SIGINT', () => {
     console.log('Gracefully shutting down due to SIGINT');
-    server.close();
     // TODO: might want to handle connections closing "more gracefully" (i.e. after a short delay)
     // https://stackoverflow.com/a/44794174
     // https://stackoverflow.com/a/40321400
+    server.close();
 });

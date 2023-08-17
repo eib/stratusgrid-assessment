@@ -9,4 +9,7 @@ watch:
 test:
 	npm run test
 
-.PHONY: build watch test
+probe:
+	npm run probers
+
+.PHONY: build watch test probers
