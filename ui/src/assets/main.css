@@ -1,0 +1,11 @@
+@import './reset.css';
+
+body {
+    margin: 1rem 5rem;
+    background-color: #ffefcf;
+}
+
+h1 {
+    font-size: 3rem;
+    margin: 2rem 0;
+}
