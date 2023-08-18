@@ -5,7 +5,7 @@ import { SearchParams } from './search-params';
 export class RestfulRouteAdapter {
     constructor(private app: express.Application, private urlRoot: string) {}
 
-    buildRoute<T>(urlRoot: string, route: Route<T>) {
+    buildRoute<TResource>(urlRoot: string, route: Route<TResource>) {
         // `GET /:resources`
         console.log(`Adding route "GET ${urlRoot}"`);
         this.app.get(`${urlRoot}`, async (req, res) => {
@@ -44,17 +44,26 @@ export class RestfulRouteAdapter {
             console.log(`Skipping route "GET ${urlRoot}/:id"`);
         }
 
-        // TODO: `POST /:resources`
-        // console.log(`Skipping route "POST ${urlRoot}"`)
-        // this.app.post(`${urlRoot}`, (req, res) => {
-        //     // console.log(`Not allowed to call "POST ${urlRoot}"`);
-        //     // res.status(405).send('Method Not Allowed');
-        //     throw new Error(`Not allowed to call "POST ${urlRoot}"`);
-        // });
-        // TODO: `PUT /:resources/:id`
-        // this.app.put(...);
-        // TODO: `DELETE /:resources/:id`
-        // this.app.delete(...);
+        // `POST /:resources`
+        if (route.create) {
+            console.log(`Adding route "POST ${urlRoot}"`)
+            this.app.post(`${urlRoot}`, async (req, res) => {
+                try {
+                    console.log('POST request:');
+                    console.log(req.body);
+                    const results = await route.create!(req.body);
+                    res.json(results);
+                } catch (err) {
+                    console.log(`Error occurred in route "POST ${urlRoot}" - `);
+                    console.log(err);
+                    res.status(500).send('Server Error');
+                }
+            });
+        } else {
+            console.log(`Skipping route "POST ${urlRoot}"`);
+        }
+
+        // TODO: PATCH, PUT, DELETE (depends on Route<T> getting corresponding methods) 
     }
 
     private parseSearchParams(req: express.Request): SearchParams {

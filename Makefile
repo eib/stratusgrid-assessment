@@ -27,6 +27,9 @@ db-url:
 psql:
 	docker exec -it `${DB_CONTAINER_QUERY}` psql postgresql://${DB_CREDS}@localhost:5432/${DB_SCHEMA}
 
+ui:
+	cd ui; npm run dev
+
 dev:
 	docker-compose up --build --detach
 prod:
@@ -40,15 +43,16 @@ test: api-test
 api-test:
 	cd api; npm run test
 
-probers: db-probers api-probers
-db-probers:
+e2e: e2e-db e2e-api
+e2e-db:
 	docker exec `${DB_CONTAINER_QUERY}` bin/run_probes.sh
-api-probers:
-	cd probers; npm run test
+e2e-api:
+	cd e2e; npm run test
 
 .PHONY: todo \
  	api-sh api-ip api-watch \
 	db-sh db-ip psql \
+	ui \
 	dev prod logs down \
 	test api-test \
-	probers db-probers api-probers
+	e2e e2e-db e2e-api

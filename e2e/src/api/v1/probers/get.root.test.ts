@@ -1,6 +1,6 @@
 import {describe, expect, test} from '@jest/globals';
 import request from 'supertest';
-import { API_HOST, API_ROOT } from '../../config';
+import { API_HOST, API_ROOT } from '../../../config';
 
 describe('GET /v1', ()  => {
     test('should include link to shows collection', async () => {

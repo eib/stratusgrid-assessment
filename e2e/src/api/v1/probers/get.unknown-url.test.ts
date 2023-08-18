@@ -1,6 +1,6 @@
 import {describe, expect, test} from '@jest/globals';
 import request from 'supertest';
-import { API_HOST } from '../../config';
+import { API_HOST } from '../../../config';
 
 describe('GET /unknown-url', ()  => {
     test('should return 404', async () => {

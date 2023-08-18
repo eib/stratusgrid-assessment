@@ -1,6 +1,6 @@
 import {describe, expect, test} from '@jest/globals';
 import request from 'supertest';
-import { API_HOST, API_ROOT } from '../../config';
+import { API_HOST, API_ROOT } from '../../../config';
 
 describe('GET /v1/shows', ()  => {
     test('should be non-empty', async () => {

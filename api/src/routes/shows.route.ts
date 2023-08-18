@@ -6,6 +6,7 @@ import { SearchResults } from "../rest/search-results";
 import { Pool } from "pg";
 import { HalLink, HalResource } from "hal-types";
 import sql from '@sequencework/sql';
+import { join } from "./routes";
 
 export class ShowsRoute implements Route<Show> {
     constructor(private baseUrl: string, private pool: Pool) {}
@@ -70,7 +71,37 @@ LIMIT ${params.perPage} OFFSET ${offset}
         return undefined;
     }
 
-    private getSelfLink(id:number): HalLink {
-        return { href: `${this.baseUrl}/${id}` };
+    async create(partial: Partial<Show>): Promise<HalLink> {
+        if (!partial) {
+            throw new Error('no data provided');
+        }
+        if (!partial.title) {
+            throw new Error('empty .title');
+        }
+        if (!partial.startYear) {
+            throw new Error('empty .title');
+        }
+        if (!partial.numSeasons) {
+            // OK: .numSeasons might be zero/misssing if a show hasn't started yet (perhaps)
+            // TODO: ... could validate that assumption, though ;)
+            partial.numSeasons = 0;
+        }
+        const stmt = sql`
+INSERT INTO shows (title, num_seasons, start_year)
+VALUES
+(${partial.title}, ${partial.numSeasons}, ${partial.startYear})
+RETURNING show_id
+`
+        const result = await this.pool.query(stmt);
+        if (result.rows.length) {
+            const newId = result.rows[0].show_id; // Note: PostgreSQL allows `RETURN show_id AS showId` syntax, but "showId" is returned lowercased ("showid") :|
+            return this.getSelfLink(newId);
+        } else {
+            throw new Error('no rows inserted');
+        }
+    }
+    
+    private getSelfLink(id: number): HalLink {
+        return { href: join(this.baseUrl, String(id)) };
     }
 }
