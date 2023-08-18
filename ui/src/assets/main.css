@@ -1,8 +1,10 @@
 @import './reset.css';
 
+/* TODO: I like this theme: https://axios-http.com/docs/example */
 body {
     margin: 1rem 5rem;
     background-color: #ffefcf;
+    font-family: "DM Sans", sans-serif;
 }
 
 h1 {

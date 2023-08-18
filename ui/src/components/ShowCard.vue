@@ -17,9 +17,31 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-.showCard {}
-.showId {}
-.showTitle {}
-.showSeasons {}
-.showDates {}
+.showCard {
+    background-color: #b8a887;
+    border-radius: 0.5rem;
+    margin: 2rem;
+    padding: 2rem;
+    max-width: 140rem;
+}
+.showId {
+    float: left;
+    display: inline;
+}
+.showTitle {
+    float: left;
+    display: inline;
+    font-size: x-large;
+}
+.showTitleSeparator {
+    display: none;
+}
+.showSeasons {
+    display: inline;
+    float: right;
+}
+.showDates {
+    /* display: inline; */
+    float: right;
+}
 </style>

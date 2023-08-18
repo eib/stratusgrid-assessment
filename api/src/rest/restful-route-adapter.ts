@@ -68,6 +68,6 @@ export class RestfulRouteAdapter {
 
     private parseSearchParams(req: express.Request): SearchParams {
         //TODO: implement, validate, sanitize (and standardize defaults)
-        return { page: 1, perPage: 10 };
+        return { page: 1, perPage: 250 };
     }
 }

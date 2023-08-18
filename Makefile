@@ -11,13 +11,15 @@ todo:
 	echo TODO: postgres `run -it` w/ localhost:5432 doesn't seem to work... so, what to use? :thinking:
 	echo TODO: lock down DB password (.pgpass, IIRC??)
 
+api:
+	@cd api; DB_URL=postgresql://${DB_CREDS}@localhost:5432/${DB_SCHEMA} npm run dev-server
 api-sh:
 	docker exec -it `${API_CONTAINER_QUERY}` bash
 api-ip:
 	@echo $(shell $(DOCKER_IP_QUERY) `$(API_CONTAINER_QUERY)`)
-api-watch:
-	@cd api; DB_URL=postgresql://${DB_CREDS}@localhost:5432/${DB_SCHEMA} npm run dev-server
 
+db:
+	docker-compose up --build --detach db
 db-sh:
 	docker exec -it `${DB_CONTAINER_QUERY}` bash
 db-ip:
@@ -39,9 +41,13 @@ logs:
 down:
 	docker-compose down
 
-test: api-test
+test: api-test ui-test ui-lint
 api-test:
 	cd api; npm run test
+ui-test:
+	cd ui; npm run test
+ui-lint:
+	cd ui; npm run lint
 
 e2e: e2e-db e2e-api
 e2e-db:
@@ -50,9 +56,9 @@ e2e-api:
 	cd e2e; npm run test
 
 .PHONY: todo \
- 	api-sh api-ip api-watch \
-	db-sh db-ip psql \
+ 	api api-sh api-ip api-watch \
+	db db-sh db-ip psql \
 	ui \
 	dev prod logs down \
-	test api-test \
+	test api-test ui-test ui-lint \
 	e2e e2e-db e2e-api

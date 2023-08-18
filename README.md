@@ -82,10 +82,20 @@ StratusGrid engineering code assessment
 
 
 ## Make targets
-Various important `make` targets:
-* `make dev` - starts services in (detached) dev mode
-* `make logs` - (continually) shows service logs
+Various semi-important `make` targets:
 * `make prod` - starts prod services
-* `make e2e` - runs e2e tests (probers, workflows, etc)
-* `make test` - runs local unit-tests
+* `make logs` - (continually) shows service logs
+* `make e2e` - runs e2e tests (probers, test workflows, etc)
+* `make test` - runs various forms of tests (locally)
 * `make psql` - connects to DB service (if up)
+
+### For developing:
+* `make dev` - starts all services via docker-compose in "dev" mode
+* `make db` - starts DB inside Docker
+* `make api` - starts API locally w/ live-reload (expects DB to be running in Docker)
+* `make ui` - starts web locally w/ live-reload
+
+... I tend to run these in parallel:
+* `docker-compose up --build db api`
+* `make ui`
+* `make e2e` or `make test` when I think it's necessary

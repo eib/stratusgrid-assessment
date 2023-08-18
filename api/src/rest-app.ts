@@ -4,6 +4,7 @@ import { Settings } from './config';
 import { Route } from './rest/route';
 import { join } from './routes/routes';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 export interface ExpressAppBuilder {
     addResourceCollection<TResource>(resourceName: string, route: Route<TResource>): ExpressAppBuilder;
@@ -18,6 +19,7 @@ export class AppBuilder {
     constructor(settings: Settings) {
         this.baseUrl = settings.baseUrl;
         this.app = express()
+            .use(cors())
             .use(bodyParser.json())
             .use(bodyParser.urlencoded());
         this.adapter = new RestfulRouteAdapter(this.app, settings.baseUrl);
