@@ -39,6 +39,7 @@ services:
     depends_on:
       - db
   
+  # TODO: create Dockerfile
   # ui:
   #   build: ./ui
   #   restart: always

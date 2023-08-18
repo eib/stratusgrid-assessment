@@ -81,9 +81,11 @@ StratusGrid engineering code assessment
     * Long-term, I would like tooling to create, import, update, rollback, and test schema changes
 
 
-## Verification steps
-* make up
-* make probe
-* make down
-* make up-prod
-* make probe
+## Make targets
+Various important `make` targets:
+* `make dev` - starts services in (detached) dev mode
+* `make logs` - (continually) shows service logs
+* `make prod` - starts prod services
+* `make e2e` - runs e2e tests (probers, workflows, etc)
+* `make test` - runs local unit-tests
+* `make psql` - connects to DB service (if up)
