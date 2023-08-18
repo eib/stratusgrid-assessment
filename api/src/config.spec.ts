@@ -17,12 +17,12 @@ describe("parseSettings()", () => {
             dbConnectionString: 'foo://bar:batz@quux:1234/blarg',
         });
         expect(actual.poolFactory).toBeInstanceOf(Function);
-        expect(actual.poolFactory()).toBeTruthy();
+        expect(actual.poolFactory(actual)).toBeTruthy();
     });
 
     test("should take default values when none specified", () => {
         const actual = parseSettings({});
         expect(actual).toMatchObject({ ...defaultSettings });
-        expect(actual.poolFactory()).toBeTruthy();
+        expect(actual.poolFactory(actual)).toBeTruthy();
     });
 });

@@ -4,7 +4,7 @@ interface Env {
     [key: string]: string | undefined;
 }
 
-export type PoolFactory = () => Pool;
+export type PoolFactory = (settings: Settings) => Pool;
 
 export interface Settings {
     port: number;
@@ -17,17 +17,20 @@ export let defaultSettings: Settings = {
     port: 8080,
     baseUrl: '/v1',
     dbConnectionString: 'postgresql://',
-    poolFactory: () => {
-        return createPool(defaultSettings.dbConnectionString);
+    poolFactory: (settings: Settings) => {
+        return createPool(settings.dbConnectionString);
     },
 };
 
 export function parseSettings(env: Env = process.env): Settings {
-    // TODO: ensure trim trailing-slash from base URL
     const port = parseInt(env.PORT || '0', 10) || defaultSettings.port;
     const baseUrl = env.API_URL || defaultSettings.baseUrl;
+    console.log('Environment DB_URL: ' + env.DB_URL);
     const dbConnectionString = env.DB_URL || defaultSettings.dbConnectionString;
+    console.log('dbConnectionString: ' + dbConnectionString);
     const poolFactory = defaultSettings.poolFactory;
+    console.log('Environment:');
+    console.log(env);
     return {
         port,
         dbConnectionString,

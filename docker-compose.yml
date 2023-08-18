@@ -22,8 +22,8 @@ services:
       target: dev_target
     restart: always
     # TODO: want live-reload (a la nodemon)
-    # volumes:
-    #   - ./api/src:/home/node/app/src
+    volumes:
+      - ./api/src:/home/node/app/src
     #   - ./api/nodemon.json:/home/node/app/nodemon.json
     environment:
       PORT: 8080

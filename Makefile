@@ -38,15 +38,17 @@ down:
 
 test: api-test
 api-test:
-	cd api; make test
+	cd api; npm run test
 
-probers: db-probers
+probers: db-probers api-probers
 db-probers:
 	docker exec `${DB_CONTAINER_QUERY}` bin/run_probes.sh
+api-probers:
+	cd probers; npm run test
 
 .PHONY: todo \
  	api-sh api-ip api-watch \
 	db-sh db-ip psql \
 	dev prod logs down \
 	test api-test \
-	probers db-probers
+	probers db-probers api-probers
