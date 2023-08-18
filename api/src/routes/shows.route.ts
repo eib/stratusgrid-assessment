@@ -81,11 +81,9 @@ LIMIT ${params.perPage} OFFSET ${offset}
         if (!partial.startYear) {
             throw new Error('empty .title');
         }
-        if (!partial.numSeasons) {
-            // OK: .numSeasons might be zero/misssing if a show hasn't started yet (perhaps)
-            // TODO: ... could validate that assumption, though ;)
-            partial.numSeasons = 0;
-        }
+        // OK: .numSeasons might be zero/misssing if a show hasn't started yet (perhaps)
+        // TODO: ... could validate that assumption, though ;)
+
         const stmt = sql`
 INSERT INTO shows (title, num_seasons, start_year)
 VALUES

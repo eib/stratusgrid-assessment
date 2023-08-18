@@ -38,7 +38,7 @@ describe("GET shows/", () => {
 describe("GET shows/:id", () => {
     test("should return a single item if it exists", async () => {
         const item = {
-            id: 13, title: "OnePiece", numSeasons:9000, startYear:1923,
+            id: 13, title: "OnePiece", numSeasons: 9000, startYear: 1923,
         };
         const app = buildAppWithMockPool((pool) => {
             when(pool.query<Show>(anything())) // Note: prepared statements (if used) aren't `anyString()`s
@@ -61,5 +61,83 @@ describe("GET shows/:id", () => {
         const res = await request(app).get(`${baseUrl}/shows/13`);
 
         expect(res.status).toBe(404);
+    });
+});
+
+describe("POST shows", () => {
+    interface ShowInsertQueryResult {
+        show_id: number
+    }
+
+    test("should return a HREF to the newly created item ", async () => {
+        const app = buildAppWithMockPool((pool) => {
+            when(pool.query<ShowInsertQueryResult>(anything())) // Note: prepared statements (if used) aren't `anyString()`s
+                .thenResolve(buildQueryResult([ { show_id: 1234 } ]));
+        });
+        const item = {
+            title: "OnePiece", numSeasons: 9000, startYear: 1923,
+        };
+        const res = await request(app).post(`${baseUrl}/shows`).send(item).set('Accept', 'application/json');
+
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('href', `${baseUrl}/shows/1234`);
+    });
+    test("should return 500 if no data provided", async () => {
+        const app = buildAppWithMockPool((pool) => {
+            when(pool.query<ShowInsertQueryResult>(anything())) // Note: prepared statements (if used) aren't `anyString()`s
+                .thenResolve(buildQueryResult([ { show_id: 1234 } ]));
+        });
+        const res = await request(app).post(`${baseUrl}/shows`).send(undefined).set('Accept', 'application/json');
+
+        expect(res.status).toBe(500);
+    });
+    test("should return 500 if unparseable data provided", async () => {
+        const app = buildAppWithMockPool((pool) => {
+            when(pool.query<ShowInsertQueryResult>(anything())) // Note: prepared statements (if used) aren't `anyString()`s
+                .thenResolve(buildQueryResult([ { show_id: 1234 } ]));
+        });
+        const res = await request(app).post(`${baseUrl}/shows`).send('foobarbatzquux').set('Accept', 'application/json');
+
+        expect(res.status).toBe(500);
+    });
+    test("should return 500 if no startYear provided", async () => {
+        const app = buildAppWithMockPool((pool) => {
+            when(pool.query<ShowInsertQueryResult>(anything())) // Note: prepared statements (if used) aren't `anyString()`s
+                .thenResolve(buildQueryResult([ { show_id: 1234 } ]));
+        });
+        const item = {
+            title: "OnePiece",
+            numSeasons: 9000,
+            // startYear: 1923,
+        };
+        const res = await request(app).post(`${baseUrl}/shows`).send(item).set('Accept', 'application/json');
+
+        expect(res.status).toBe(500);
+    });
+    test("should return 500 if no title provided", async () => {
+        const app = buildAppWithMockPool((pool) => {
+            when(pool.query<ShowInsertQueryResult>(anything())) // Note: prepared statements (if used) aren't `anyString()`s
+                .thenResolve(buildQueryResult([ { show_id: 1234 } ]));
+        });
+        const item = {
+            // title: "OnePiece",
+            numSeasons: 9000,
+            startYear: 1923,
+        };
+        const res = await request(app).post(`${baseUrl}/shows`).send(item).set('Accept', 'application/json');
+
+        expect(res.status).toBe(500);
+    });
+    test("should return 500 if no show ID returned by DB", async () => {
+        const app = buildAppWithMockPool((pool) => {
+            when(pool.query<ShowInsertQueryResult>(anything())) // Note: prepared statements (if used) aren't `anyString()`s
+                .thenResolve(buildQueryResult([]));
+        });
+        const item = {
+            title: "OnePiece", numSeasons: 9000, startYear: 1923,
+        };
+        const res = await request(app).post(`${baseUrl}/shows`).send(item).set('Accept', 'application/json');
+
+        expect(res.status).toBe(500);
     });
 });
